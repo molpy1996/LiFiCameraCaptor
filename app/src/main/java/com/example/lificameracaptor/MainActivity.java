@@ -3,6 +3,7 @@ package com.example.lificameracaptor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private LiFiSdkManager liFiSdkManager;
 
     TextView textView;
-    FrameLayout camera;
+    ConstraintLayout mainLayout;
 
 
     @Override
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textview);
 
-        camera = findViewById(R.id.main_layout);
+        mainLayout = findViewById(R.id.main_layout);
 
         Button buttonRequest = findViewById(R.id.button);
         buttonRequest.setOnClickListener(new View.OnClickListener() {
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         liFiSdkManager = new LiFiSdkManager(this, new LiFiCallback() {
             @Override
@@ -113,6 +114,16 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (liFiSdkManager != null && liFiSdkManager.isStarted()) {
+            liFiSdkManager.stop();
+            liFiSdkManager = null;
         }
     }
 }
